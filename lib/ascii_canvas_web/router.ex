@@ -20,10 +20,12 @@ defmodule AsciiCanvasWeb.Router do
     get "/", PageController, :index
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", AsciiCanvasWeb do
-  #   pipe_through :api
-  # end
+  scope "/api", AsciiCanvasWeb do
+    pipe_through :api
+    post "/canvas/", CanvasController, :create
+    post "/canvas/:id", CanvasController, :add_command
+    get "/canvas/:id", CanvasController, :draw
+  end
 
   # Enables LiveDashboard only for development
   #
