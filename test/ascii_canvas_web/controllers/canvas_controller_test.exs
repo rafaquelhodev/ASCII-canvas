@@ -105,7 +105,7 @@ defmodule AsciiCanvasWeb.CanvasControllerTest do
           "\n     XXXXX"
 
       assert json_response(conn, 200) == %{
-               "drawing" => expected_draw,
+               "drawing" => expected_draw
              }
     end
   end
