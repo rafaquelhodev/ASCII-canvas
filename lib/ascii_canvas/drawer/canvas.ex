@@ -43,7 +43,7 @@ defmodule AsciiCanvas.Drawer.Canvas do
   end
 
   @doc """
-  Fill pixels in a canvas according to provided commands.any()
+  Fill pixels in a canvas according to provided commands.
 
   Return `{:ok, canvas}` in case of success. If an error occurs, returns
   `{:error, reason}`.
