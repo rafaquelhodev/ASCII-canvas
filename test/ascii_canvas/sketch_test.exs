@@ -20,6 +20,24 @@ defmodule AsciiCanvas.SketchTest do
       assert Sketch.get_canvas!(canvas.id) == canvas
     end
 
+    test "get_canvas_and_commands/1 returns the canvas and its commands" do
+      canvas = canvas_fixture()
+
+      valid_attrs = %{command: %{"type" => "rect"}}
+      {:ok, _} = Sketch.create_command(canvas.id, valid_attrs)
+      {:ok, _} = Sketch.create_command(canvas.id, valid_attrs)
+
+      assert {:ok, found_canvas} = Sketch.get_canvas_and_commands(canvas.id)
+
+      assert length(found_canvas.commands) == 2
+    end
+
+    test "get_canvas_and_commands/1 returns error when canvas is not found" do
+      random_uuid = Ecto.UUID.generate()
+
+      assert {:error, :not_found} = Sketch.get_canvas_and_commands(random_uuid)
+    end
+
     test "create_canvas/1 with valid data creates a canvas" do
       valid_attrs = %{max_size_x: 42, max_size_y: 42}
 

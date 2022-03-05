@@ -8,6 +8,8 @@ defmodule AsciiCanvas.Sketch do
 
   alias AsciiCanvas.Sketch.Canvas
 
+  alias AsciiCanvas.Sketch.Command
+
   @doc """
   Returns the list of canvas.
 
@@ -55,6 +57,18 @@ defmodule AsciiCanvas.Sketch do
     case Repo.get(Canvas, id) do
       nil -> {:error, :not_found}
       canvas -> {:ok, canvas}
+    end
+  end
+
+  @doc """
+  Get a canvas wiht its commands preloaded.
+
+  Returns `{:ok, canvas}` in case of success and `{:error, :not_found}`
+  when canvas is not found.
+  """
+  def get_canvas_and_commands(id) do
+    with {:ok, canvas} <- get_canvas(id) do
+      {:ok, Repo.preload(canvas, commands: from(c in Command, order_by: c.inserted_at))}
     end
   end
 
@@ -123,8 +137,6 @@ defmodule AsciiCanvas.Sketch do
     Canvas.changeset(canvas, attrs)
   end
 
-  alias AsciiCanvas.Sketch.Command
-
   @doc """
   Creates a command for a given canvas_id.
 
@@ -136,10 +148,9 @@ defmodule AsciiCanvas.Sketch do
   """
   def create_command(canvas_id, attrs \\ %{}) do
     with {:ok, canvas} <- get_canvas(canvas_id) do
-      command_with_canvas = Map.put(attrs, :canvas_id, canvas.id)
-
-      %Command{}
-      |> Command.changeset(command_with_canvas)
+      %Command{canvas_id: canvas.id}
+      |> Ecto.Changeset.change()
+      |> Command.changeset(attrs)
       |> Repo.insert()
     end
   end
