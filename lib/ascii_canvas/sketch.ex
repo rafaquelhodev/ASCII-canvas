@@ -152,7 +152,7 @@ defmodule AsciiCanvas.Sketch do
     with {:ok, canvas} <- get_canvas(canvas_id) do
       %Command{canvas_id: canvas.id}
       |> Ecto.Changeset.change()
-      |> Command.changeset(attrs)
+      |> Command.changeset(attrs, [canvas.max_size_x, canvas.max_size_y])
       |> Repo.insert()
     end
   end
@@ -189,18 +189,5 @@ defmodule AsciiCanvas.Sketch do
     rescue
       _ -> {:error, :query_error}
     end
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking command changes.
-
-  ## Examples
-
-      iex> change_command(command)
-      %Ecto.Changeset{data: %Command{}}
-
-  """
-  def change_command(%Command{} = command, attrs \\ %{}) do
-    Command.changeset(command, attrs)
   end
 end

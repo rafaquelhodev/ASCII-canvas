@@ -18,12 +18,32 @@ defmodule AsciiCanvas.Drawer.Canvas do
   """
   @spec create(canvas(), integer()) :: {:ok, canvas()} | {:error, binary()}
   def create(max_x, max_y) do
+    with {:ok} <- validate_dimensions(max_x), {:ok} <- validate_dimensions(max_y) do
+      {:ok, %__MODULE__{size: {max_x, max_y}}}
+    end
+  end
+
+  def validate(max_x, max_y) do
     cond do
       is_integer(max_x) and is_integer(max_y) and max_x > 0 and max_y > 0 ->
-        {:ok, %__MODULE__{size: {max_x, max_y}}}
+        {:ok}
 
       true ->
-        {:error, "invalid parameters"}
+        {:error, ["the size of the canvas must composed by positive integers"]}
+    end
+  end
+
+  @doc """
+  Validates the dimensions of a canvas.
+  """
+  @spec validate_dimensions(any()) :: {:ok} | {:error, binary()}
+  def validate_dimensions(dimension) do
+    cond do
+      is_integer(dimension) and dimension > 0 ->
+        {:ok}
+
+      true ->
+        {:error, "a positive integer must be provided"}
     end
   end
 

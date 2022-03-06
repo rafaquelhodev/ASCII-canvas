@@ -4,6 +4,8 @@ defmodule AsciiCanvasWeb.CanvasController do
   alias AsciiCanvas.Sketch
   alias AsciiCanvas.Drawing
 
+  action_fallback AsciiCanvasWeb.FallbackController
+
   def create(conn, canvas = %{}) do
     with {:ok, canvas} <- Sketch.create_canvas(canvas) do
       render(conn, "create_canvas.json", canvas: canvas)
