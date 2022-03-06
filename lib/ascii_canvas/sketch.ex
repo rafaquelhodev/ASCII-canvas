@@ -58,6 +58,8 @@ defmodule AsciiCanvas.Sketch do
       nil -> {:error, :not_found}
       canvas -> {:ok, canvas}
     end
+  rescue
+    Ecto.Query.CastError -> {:error, "invalid input getting a canvas"}
   end
 
   @doc """

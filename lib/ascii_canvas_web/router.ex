@@ -18,6 +18,7 @@ defmodule AsciiCanvasWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    post "/draw", PageController, :draw_canvas
   end
 
   scope "/api", AsciiCanvasWeb do
