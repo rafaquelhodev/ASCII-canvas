@@ -23,7 +23,16 @@ defmodule AsciiCanvas.SketchTest do
     test "get_canvas_and_commands/1 returns the canvas and its commands" do
       canvas = canvas_fixture()
 
-      valid_attrs = %{command: %{"type" => "rect"}}
+      valid_attrs = %{
+        command: %{
+          "type" => "rect",
+          "coords" => [5, 6],
+          "width" => 5,
+          "height" => 5,
+          "fill" => "."
+        }
+      }
+
       {:ok, _} = Sketch.create_command(canvas.id, valid_attrs)
       {:ok, _} = Sketch.create_command(canvas.id, valid_attrs)
 
@@ -85,7 +94,15 @@ defmodule AsciiCanvas.SketchTest do
     test "create_command/2 with valid data creates a command" do
       {:ok, canvas} = Sketch.create_canvas(%{max_size_x: 42, max_size_y: 42})
 
-      valid_attrs = %{command: %{"type" => "rect"}}
+      valid_attrs = %{
+        command: %{
+          "type" => "rect",
+          "coords" => [5, 6],
+          "width" => 5,
+          "height" => 5,
+          "fill" => "."
+        }
+      }
 
       assert {:ok, command} = Sketch.create_command(canvas.id, valid_attrs)
       assert command.command == valid_attrs.command
@@ -94,7 +111,15 @@ defmodule AsciiCanvas.SketchTest do
     test "create_command/2 returns error when canvas is not found" do
       random_uuid = Ecto.UUID.generate()
 
-      valid_attrs = %{command: %{"type" => "rect"}}
+      valid_attrs = %{
+        command: %{
+          "type" => "rect",
+          "coords" => [5, 6],
+          "width" => 5,
+          "height" => 5,
+          "fill" => "."
+        }
+      }
 
       assert {:error, :not_found} = Sketch.create_command(random_uuid, valid_attrs)
     end
@@ -108,7 +133,15 @@ defmodule AsciiCanvas.SketchTest do
     test "get_commands/2 returns all commands from a canvas" do
       {:ok, canvas} = Sketch.create_canvas(%{max_size_x: 42, max_size_y: 42})
 
-      valid_attrs = %{command: %{"type" => "rect"}}
+      valid_attrs = %{
+        command: %{
+          "type" => "rect",
+          "coords" => [5, 6],
+          "width" => 5,
+          "height" => 5,
+          "fill" => "."
+        }
+      }
 
       {:ok, command1} = Sketch.create_command(canvas.id, valid_attrs)
       {:ok, command2} = Sketch.create_command(canvas.id, valid_attrs)

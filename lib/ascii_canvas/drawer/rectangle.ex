@@ -6,15 +6,33 @@ defmodule AsciiCanvas.Drawer.Rectangle do
 
   alias AsciiCanvas.Drawer.Canvas
 
+  @types %{
+    coords: {:array, :integer},
+    width: :integer,
+    height: :integer,
+    fill: :string,
+    out: :string
+  }
+  @required [:coords, :width, :height]
+
+  @doc """
+  Validates a rectangle command creation.
+  """
+  @spec validate(map(), list()) :: %Ecto.Changeset{}
+  def validate(command, canvas_dimensions) do
+    {%{}, @types}
+    |> Ecto.Changeset.cast(command, Map.keys(@types))
+    |> Ecto.Changeset.validate_required(@required)
+    |> validate_optional()
+    |> validate_dimensions(command, canvas_dimensions)
+  end
+
   @doc """
   Fills a canvas following a command.
   """
   @spec fill_canvas(Canvas.canvas(), map()) :: {:ok, Canvas.canvas()}
   def fill_canvas(canvas, command) do
-    [min_x, min_y] = command["coords"]
-
-    max_x = min_x + command["width"]
-    max_y = min_y + command["height"]
+    [min_y: min_y, max_y: max_y, min_x: min_x, max_x: max_x] = find_corners(command)
 
     fill_pixels = find_fill_pixels(min_y, max_y, min_x, max_x)
     {:ok, canvas} = draw(canvas, fill_pixels, command["fill"])
@@ -83,5 +101,53 @@ defmodule AsciiCanvas.Drawer.Rectangle do
       true ->
         canvas
     end
+  end
+
+  defp validate_optional(changeset) do
+    case changeset.valid? do
+      true ->
+        if not is_nil(Map.get(changeset.changes, :fill)) or
+             not is_nil(Map.get(changeset.changes, :out)) do
+          changeset
+        else
+          Ecto.Changeset.add_error(changeset, :fill, "either fill or out fields must be present")
+          |> Ecto.Changeset.add_error(:out, "either fill or out fields must be present")
+        end
+
+      _ ->
+        changeset
+    end
+  end
+
+  defp validate_dimensions(changeset, command, canvas_dimensions) do
+    case changeset.valid? do
+      true ->
+        [min_y: min_y, max_y: max_y, min_x: min_x, max_x: max_x] = find_corners(command)
+
+        [canvas_max_x, canvas_max_y] = canvas_dimensions
+
+        cond do
+          max_x > canvas_max_x or max_y > canvas_max_y ->
+            Ecto.Changeset.add_error(changeset, :coords, "rectangle exceeds canvas dimensions")
+
+          min_x < 0 or min_y < 0 ->
+            Ecto.Changeset.add_error(changeset, :coords, "negative coordinates are not allowed")
+
+          true ->
+            changeset
+        end
+
+      _ ->
+        changeset
+    end
+  end
+
+  defp find_corners(command) do
+    [min_x, min_y] = command["coords"]
+
+    max_x = min_x + command["width"]
+    max_y = min_y + command["height"]
+
+    [min_y: min_y, max_y: max_y, min_x: min_x, max_x: max_x]
   end
 end
