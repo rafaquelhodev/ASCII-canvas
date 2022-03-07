@@ -1,0 +1,95 @@
+{
+	"info": {
+		"_postman_id": "cc84b850-4b14-4a7b-ad21-8fa32d897b00",
+		"name": "AsciiCanvas",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create canvas",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"max_size_x\": 22,\n    \"max_size_y\": 9\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:4000/api/canvas/",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"api",
+						"canvas",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add command",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"command\": {\n        \"type\": \"rect\",\n        \"coords\": [\n            5,\n            5\n        ],\n        \"height\": 3,\n        \"width\": 5,\n        \"out\": \"X\",\n        \"fill\": \"X\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:4000/api/canvas/dc31782c-19ef-445a-b99a-7dbb2719ef35",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "4000",
+					"path": [
+						"api",
+						"canvas",
+						"dc31782c-19ef-445a-b99a-7dbb2719ef35"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get drawing",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:4000/api/canvas/1",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "4000",
+					"path": [
+						"api",
+						"canvas",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
